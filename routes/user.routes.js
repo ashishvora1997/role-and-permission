@@ -1,5 +1,5 @@
 const express = require("express");
-const { getAllUsersList, registerUser, loginUser } = require("../controllers/user.controller");
+const { getAllUsersList, registerUser, loginUser, deleteUser, getUserRoles, updateUserRoles } = require("../controllers/user.controller");
 const validateToken = require("../middleware/validateTokenHandler");
 const checkRole = require("../middleware/checkRole");
 
@@ -11,13 +11,13 @@ router.post("/register", validateToken, checkRole(["SUPER_ADMIN"]), registerUser
 
 router.post("/login", loginUser);
 
-// router.get("/profile", validateToken, getUserProfile);
+router.delete("/:id", validateToken, checkRole(["SUPER_ADMIN"]), deleteUser);
 
-// router.patch("/profile", validateToken, updateUserProfile);
+router.get("/:id", validateToken, checkRole(["SUPER_ADMIN"]), getUserRoles);
 
-// router.delete("/profile", validateToken, deleteUserProfile);
+router.post("/:id/role-update", validateToken, checkRole(["SUPER_ADMIN"]), updateUserRoles);
 
-// router.post("/changePassword", validateToken, changeUserPassword);
+
 
 
 module.exports = router;

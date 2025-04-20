@@ -29,7 +29,7 @@ const getAllUsersList = async (req, res) => {
   });
 
   // Format roles to only include role names (strings)
-  const formattedData = data.map(user => {
+  const formattedData = data.map((user) => {
     const userJson = user.toJSON(); // Convert Sequelize instance to plain object
     const roles = userJson.Roles.map(role => role.name);
     delete userJson.Roles;
@@ -155,8 +155,73 @@ const loginUser = asyncHandler(async (req, res) => {
   throw new Error("Invalid credentials");
 });
 
+const deleteUser = asyncHandler(async (req, res) => {
+  const {id} = req.params;
+
+  // const user = await User.findOne({ where: { id }})
+  const user = await User.findByPk(id, {
+    // attributes: ["id", "name", "email"],
+    include: {
+      model: Role,
+      attributes: [["id", "role_id"], "name"],
+      through: { attributes : []}
+    }
+  })
+
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+
+  try {
+    await user.setRoles([]);
+    await user.destroy();
+    res.status(200).json({ message: "User Deleted successfully", user, roles: (await user.getRoles()).map(({id, name}) => ({ id, name})) })
+  } catch (error) {
+    res.status(403);
+    throw new Error(error)
+  }
+})
+
+const getUserRoles = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const user = await User.findByPk(id, {
+    attributes: ["id", "name", "email"],
+    include: {
+      model: Role,
+      attributes: ["id", "name"],
+      through: { attributes: []}
+    }
+  })
+  res.status(200).json({ message: "User successfully fetched", data: user });
+})
+
+const updateUserRoles = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  const { roles } = req.body;
+  const user = await User.findByPk(id, {
+    attributes: ["id", "name", "email"],
+    include: {
+      model: Role,
+      attributes: ["id", "name"],
+      through: { attributes : []}
+    }
+  })
+  if (!user) {
+    res.status(400);
+    throw new Error("User not found");
+  }
+
+  await user.setRoles(roles.map((item) => item.id || item));
+  const plainUser = user.get({ plain: true });
+  res.status(200).json({ message: "Roles successfully updated", data: { ...plainUser, Roles: roles } });
+})
+
 module.exports = {
   getAllUsersList,
   registerUser,
   loginUser,
+  deleteUser,
+  getUserRoles,
+  updateUserRoles
 };
