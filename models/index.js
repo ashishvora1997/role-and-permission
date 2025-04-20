@@ -16,10 +16,14 @@ const User = UserModel(sequelize);
 User.belongsToMany(Role, {
   through: 'user_roles',
   foreignKey: 'user_id',
+  onDelete: 'CASCADE',
+  hooks: true,
 });
 Role.belongsToMany(User, {
   through: 'user_roles',
   foreignKey: 'role_id',
+  onDelete: 'CASCADE',
+  hooks: true,
 });
 
 // Sync and seed roles + Super Admin user

@@ -3,7 +3,6 @@ const { User, Role } = require("../models");
 const checkRole = (requiredRoles = []) => {
   return async (req, res, next) => {
     try {
-      console.log("user-checkRole")
       const user = await User.findByPk(req.user.id, {
         include: {
           model: Role,
@@ -11,16 +10,12 @@ const checkRole = (requiredRoles = []) => {
         }
       });
 
-      console.log("user-checkRole", user)
-
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       }
 
       const userRoles = user.Roles.map(role => role.name);
 
-      console.log("user-detail", user, userRoles);
-      
       const hasRole = requiredRoles.some(role => userRoles.includes(role));
 
       if (!hasRole) {

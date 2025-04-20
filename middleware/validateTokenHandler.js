@@ -20,7 +20,7 @@ const validateToken = asyncHandler(async (req, res, next) => {
           if (err) {
             return res.status(401).json({ message: "Token is not Authorized" });
           }
-          console.log("decoded", decoded);
+          // console.log("decoded", decoded);
           return decoded;
         }
       );
