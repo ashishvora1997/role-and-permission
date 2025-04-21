@@ -16,7 +16,7 @@ const checkRole = (requiredRoles = []) => {
 
       const userRoles = user.Roles.map(role => role.name);
 
-      const hasRole = requiredRoles.some(role => userRoles.includes(role));
+      const hasRole = [...requiredRoles, "SUPER_ADMIN"].some(role => userRoles.includes(role));
 
       if (!hasRole) {
         return res.status(403).json({ message: "Access denied. Insufficient role." });

@@ -4,10 +4,13 @@ const { sequelize } = require('../config/dbConnection');
 // Import model factories
 const RoleModel = require('./role.modal');
 const UserModel = require('./user.modal');
+const TaskModel = require('./task.modal');
 
 // Init models
 const Role = RoleModel(sequelize);
 const User = UserModel(sequelize);
+const Task = TaskModel(sequelize);
+
 
 // Define associations
 // Role.hasMany(User, { foreignKey: 'role_id', onDelete: 'CASCADE', onUpdate: 'CASCADE' });
@@ -26,9 +29,20 @@ Role.belongsToMany(User, {
   hooks: true,
 });
 
+User.hasMany(Task, {
+  foreignKey: "user_id",
+  as: "tasks",
+  onDelete: 'CASCADE',
+});
+Task.belongsTo(User, {
+  foreignKey: "user_id",
+  as: "user",
+  onDelete: 'CASCADE',
+});
+
 // Sync and seed roles + Super Admin user
 const connectDb = async () => {
-  await sequelize.sync({ force: false, alter: true });
+  await sequelize.sync({ force: false, alter: false });
 
   const roleNames = ['SUPER_ADMIN', 'COMPANY_ADMIN', 'USER', 'VISITOR'];
   const rolesMap = {};
@@ -63,5 +77,6 @@ module.exports = {
   sequelize,
   User,
   Role,
+  Task,
   connectDb
 };
