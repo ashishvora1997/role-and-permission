@@ -5,17 +5,17 @@ const checkRole = require("../middleware/checkRole");
 
 const router = express.Router();
 
-router.get("/", validateToken, checkRole(["SUPER_ADMIN"]), getAllUsersList)
+router.get("/", validateToken, checkRole([]), getAllUsersList)
 
-router.post("/register", validateToken, checkRole(["SUPER_ADMIN"]), registerUser);
+router.post("/register", validateToken, checkRole([]), registerUser);
 
 router.post("/login", loginUser);
 
-router.delete("/:id", validateToken, checkRole(["SUPER_ADMIN"]), deleteUser);
+router.delete("/:id", validateToken, checkRole([]), deleteUser);
 
-router.get("/:id", validateToken, checkRole(["SUPER_ADMIN"]), getUserRoles);
+router.get("/:id", validateToken, checkRole([]), getUserRoles);
 
-router.post("/:id/role-update", validateToken, checkRole(["SUPER_ADMIN"]), updateUserRoles);
+router.post("/:id/role-update", validateToken, checkRole([]), updateUserRoles);
 
 
 
