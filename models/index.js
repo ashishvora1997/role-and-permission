@@ -55,13 +55,13 @@ const connectDb = async () => {
     rolesMap[name] = role;
   }
 
-  const existingUser = await User.findOne({ where: { email: 'ashish@gmail.com' } });
+  const existingUser = await User.findOne({ where: { email: 'test@gmail.com' } });
 
   if (!existingUser) {
-    const hashedPassword = await bcrypt.hash('Password12!', 10);
+    const hashedPassword = await bcrypt.hash('Test@123', 10);
     const user = await User.create({
       name: 'Ashish',
-      email: 'ashish@gmail.com',
+      email: 'test@gmail.com',
       password: hashedPassword,
       gender: 'Male',
       // role_id: rolesMap['SUPER_ADMIN'].id
